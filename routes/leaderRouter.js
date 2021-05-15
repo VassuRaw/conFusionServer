@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const authenticate = require("../authenticate");
 const Leaders = require("../models/leaders");
-
+const cors = require("./cors");
 const leaderRouter = express.Router();
 
 leaderRouter.use(bodyParser.json());
@@ -14,7 +14,8 @@ leaderRouter
   //   response.setHeader("Content-Type", "text/plain");
   //   next();
   // })
-  .get((request, response, next) => {
+  .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
+  .get(cors.cors, (request, response, next) => {
     Leaders.find()
       .then(
         (leaders) => {
@@ -27,6 +28,7 @@ leaderRouter
       .catch((err) => next(err));
   })
   .post(
+    cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (request, response, next) => {
@@ -44,6 +46,7 @@ leaderRouter
     }
   )
   .put(
+    cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (request, response, next) => {
@@ -52,6 +55,7 @@ leaderRouter
     }
   )
   .delete(
+    cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (request, response, next) => {
@@ -70,7 +74,8 @@ leaderRouter
 
 leaderRouter
   .route("/:leaderId")
-  .get((request, response, next) => {
+  .options(cors.corsWithOptions, (req, res) => res.sendStatus(200))
+  .get(cors.cors, (request, response, next) => {
     Leaders.findById(request.params.leaderId)
       .then(
         (leader) => {
@@ -83,6 +88,7 @@ leaderRouter
       .catch((err) => next(err));
   })
   .post(
+    cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (request, response, next) => {
@@ -93,6 +99,7 @@ leaderRouter
     }
   )
   .put(
+    cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (request, response, next) => {
@@ -113,6 +120,7 @@ leaderRouter
     }
   )
   .delete(
+    cors.corsWithOptions,
     authenticate.verifyUser,
     authenticate.verifyAdmin,
     (request, response, next) => {
